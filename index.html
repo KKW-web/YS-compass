@@ -1283,7 +1283,7 @@ body.dark img,body.dark svg{opacity:.94}
 
 /* ===== 버전 ===== */
 const APP_VER='v32', APP_DATE='2026-08-21';
-const VER_NOTE='v32 · 2026-08-21\n· 5등급 환산을 부산교육청 진학아이 기준표로 교체\n· 화면에 버전 표시 추가\n(이전) v31 원자료 ver0703 전수 대조 · v30 5등급 환산 · v29 배지·색상 개편';
+const VER_NOTE='v32 · 2026.08.21.\n· 5등급 환산을 부산교육청 진학아이 기준표로 교체\n· 화면에 버전 표시 추가\n(이전) v31 원자료 ver0703 전수 대조 · v30 5등급 환산 · v29 배지·색상 개편';
 const RAW = JSON.parse(document.getElementById('DATA').textContent);
 const U = RAW.unis, A = RAW.adiga, S = RAW.school, META = RAW.meta;
 const AD27 = RAW.admis2027||[], SCHED = RAW.sched||[], DICT = RAW.dict||[];
@@ -2844,14 +2844,40 @@ function cartBackup(){
   const payload={app:'susi-nachimban', v:1, savedAt:new Date().toISOString(), ci:CI,
     items:CART.map(c=>{ const g=A[c.gi]; return {gi:c.gi, memo:c.memo||'',
       uni:U[g.u].n, major:g.m, jeon:g.j, type:g.t}; })};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
+  const text=JSON.stringify(payload,null,2);
   const nm=(CI.name||'희망원').replace(/[\\/:*?"<>|]/g,'');
   const d=new Date(); const ds=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  a.href=url; a.download=`수시희망원_${nm}_${ds}.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const filename=`수시희망원_${nm}_${ds}.json`;
+  saveFile(filename, text, 'application/json');
+}
+/* 파일 저장: 아티팩트 뷰어에서는 downloads 기능을, 그 밖에서는 일반 다운로드를 사용 */
+async function saveFile(filename, text, mime){
+  try{
+    if(window.claude && typeof window.claude.use==='function'){
+      const dl = await window.claude.use('downloads');
+      if(dl){
+        try{ await dl.save({filename, data:text}); return true; }
+        catch(e){
+          const c=e && e.code;
+          if(c==='declined') return false;
+          if(c==='rate_limited'){ alert('잠시 후 다시 눌러 주세요.'); return false; }
+          /* 그 외에는 아래 일반 다운로드로 폴백 */
+        }
+      }
+    }
+  }catch(e){}
+  try{
+    const blob=new Blob([text],{type:mime||'application/octet-stream'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url; a.download=filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    return true;
+  }catch(e){
+    alert('이 화면에서는 파일 저장이 지원되지 않아요. 배포받은 HTML 파일을 직접 열어서 저장해 주세요.');
+    return false;
+  }
 }
 function cartRestore(file){
   const fr=new FileReader();
@@ -2872,7 +2898,7 @@ function cartRestore(file){
   };
   fr.readAsText(file);
 }
-if($('cart-backup')) $('cart-backup').onclick=cartBackup;
+if($('cart-backup')) $('cart-backup').onclick=()=>{ cartBackup(); };
 if($('cart-restore')) $('cart-restore').onclick=()=>$('cart-file').click();
 if($('cart-file')) $('cart-file').addEventListener('change', e=>{
   const f=e.target.files&&e.target.files[0]; if(f) cartRestore(f); e.target.value='';
@@ -3051,7 +3077,7 @@ function applyDark(on){
 /* ---------- guide ---------- */
 function renderGuide(){
   $('guide-body').innerHTML=`
-  <h3>📌 이 배치표는 무엇인가요? <span class="guide-ver">${APP_VER} · ${APP_DATE}</span></h3>
+  <h3>📌 이 배치표는 무엇인가요? <span class="guide-ver">${APP_VER} · ${APP_DATE.replace(/-/g,'.')}. 업데이트</span></h3>
   <p>대학이 <b>대학어디가</b>에 공식 발표한 2023~2026학년도 수시 입결(등급컷·경쟁률·추가합격)과,
   <b>본교(동국대학교사범대학부속영석고등학교) 2024~2026학년도 3개년 수시 지원 결과 ${S.length.toLocaleString()}건(${META.nStudents}명)</b>을 함께 볼 수 있게 만든 자료예요.
   동국대학교사범대학부속영석고등학교 3학년부에서 학생들의 수시 지원을 돕기 위해 제작했어요.</p>
@@ -3174,7 +3200,7 @@ function render(){
 }
 try{ const sc=localStorage.getItem('sn_scale'); if(sc==='5') st.scale=5; }catch(e){}
 { const vb=$('ver-badge');
-  if(vb){ vb.innerHTML=`${APP_VER}<em>${APP_DATE.slice(2).replace(/-/g,'.')}</em>`; vb.title=VER_NOTE;
+  if(vb){ vb.textContent=APP_VER; vb.title=VER_NOTE;
     vb.style.cursor='pointer'; vb.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>{ if(x.dataset.tab==='guide') x.click(); }); }; }
   const lv=$('lock-ver'); if(lv) lv.textContent=APP_VER; }
 $('pill-n').textContent=S.length.toLocaleString();
