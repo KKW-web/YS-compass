@@ -751,6 +751,82 @@ textarea.cart-memo{resize:vertical;min-height:44px;line-height:1.5;font-family:i
 .est-warn b{color:#4a3204}
 .conv-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
 @media (max-width:760px){ .ver-badge{vertical-align:4px;font-size:10px;padding:1px 7px;margin-left:6px} }
+
+/* ---- v33: 희망원 인쇄 = 표 서식(.ps-tbl) ---- */
+@media print{
+  #print-sheet .ps-info{justify-content:flex-end;margin-bottom:6px}
+  #print-sheet .ps-tbl{width:100%;border-collapse:collapse;margin-top:2.5mm;table-layout:fixed;
+    font-size:9px;line-height:1.35;color:#000;font-variant-numeric:tabular-nums;
+    word-break:keep-all;overflow-wrap:anywhere}
+  #print-sheet .ps-tbl th,#print-sheet .ps-tbl td{
+    border:.5pt solid #97a0aa;padding:.85mm 1.3mm;vertical-align:top;text-align:left}
+  #print-sheet .ps-tbl thead th{background:#eaeef3;font-size:8.5px;font-weight:800;
+    text-align:center;vertical-align:middle;line-height:1.3;padding:1.6mm 1.3mm;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-sheet .ps-tbl thead th small{display:block;font-size:7.5px;font-weight:700;color:#444}
+  #print-sheet .ps-tbl thead tr.ps-g th{background:#dde3ea;font-size:7.8px;
+    letter-spacing:2.5px;color:#333;font-weight:800;padding:.9mm 1.3mm}
+  #print-sheet .ps-tbl tbody tr{break-inside:avoid;page-break-inside:avoid}
+  #print-sheet .ps-tbl tbody tr.ps-row td{border-bottom-style:none}
+  #print-sheet .ps-tbl tbody tr.ps-memo td{border-top-style:none;
+    font-size:8.5px;color:#444;padding-top:0}
+  #print-sheet .ps-tbl tbody tr.ps-last td{border-bottom:.5pt solid #97a0aa}
+
+  #print-sheet .ps-rank{text-align:center;font-weight:800;font-size:8.5px;white-space:nowrap}
+  #print-sheet .ps-uni{font-size:10px;font-weight:800;letter-spacing:-.2px}
+  #print-sheet .ps-dept{font-size:9px;color:#333;margin-top:.3mm}
+  #print-sheet .ps-jn{font-weight:700}
+  #print-sheet .ps-tt{display:inline-block;margin-top:.5mm;padding:0 4px;
+    border:.5pt solid #97a0aa;border-radius:2px;font-size:7.5px;font-weight:700;color:#333}
+  #print-sheet .ps-sub{font-size:7.8px;color:#555;margin-top:.5mm;font-weight:600}
+  #print-sheet .ps-dim{font-size:8px;color:#777;font-weight:600}
+
+  #print-sheet .ps-cut{text-align:center;font-size:11.5px;font-weight:800;letter-spacing:-.3px}
+  #print-sheet .ps-cut span{color:#aeb5bd;font-weight:400;margin:0 1px}
+  #print-sheet td.ps-c-cut .ps-sub{text-align:center}
+  #print-sheet .ps-inv{font-size:7px;vertical-align:super}
+
+  #print-sheet .ps-b{display:inline-block;border-radius:2px;padding:0 4px;margin:0 2px .6mm 0;
+    font-size:8px;font-weight:800;border:.5pt solid #999;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-sheet .ps-b i{font-style:normal;font-weight:700;margin-left:2px}
+  #print-sheet .ps-b.p{background:#e4f3e9;border-color:#8fbfa2;color:#0d5c36}
+  #print-sheet .ps-b.f{background:#fbe8e6;border-color:#d9a9a3;color:#8f2020}
+
+  #print-sheet .ps-ex{text-align:left;font-size:8.6px;line-height:1.4}
+  #print-sheet .ps-ex b{display:block;font-size:9.4px;font-weight:800;margin:.3mm 0}
+  #print-sheet .ps-exk{display:inline-block;font-size:7.5px;font-weight:800;color:#333;
+    background:#eceff3;border:.5pt solid #97a0aa;border-radius:2px;padding:0 3px;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-sheet .ps-exr{display:block;font-size:8px;color:#444;font-weight:600}
+  #print-sheet .ps-exc{display:block;font-size:8px;font-weight:800;color:#a4231b;margin-top:.3mm}
+  #print-sheet .ps-ex.clash b{color:#a4231b}
+  #print-sheet .ps-min{font-weight:800;color:#8f2020;font-size:9px}
+  #print-sheet td .ps-sub{word-break:keep-all}
+
+  #print-sheet .ps-st{display:flex;gap:1.2mm;margin-bottom:.5mm}
+  #print-sheet .ps-st:last-child{margin-bottom:0}
+  #print-sheet .ps-k{flex:none;font-size:7.5px;font-weight:800;border:.5pt solid #6b7580;
+    border-radius:2px;padding:0 3px;height:fit-content;background:#eceff3;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #print-sheet .ps-v{flex:1}
+
+  /* 가로 1장에 담기 위한 여백 압축 + 하단 2단 */
+  #print-sheet .ps-title{font-size:18px;letter-spacing:4px;margin:0 0 1px}
+  #print-sheet .ps-school{font-size:11px;margin-bottom:5px}
+  #print-sheet .ps-note{font-size:8.4px;margin-top:1.6mm;line-height:1.45}
+  #print-sheet .ps-foot{display:flex;gap:4mm;margin-top:2mm;
+    break-inside:avoid;page-break-inside:avoid}
+  #print-sheet .ps-foot .ps-op{flex:1;margin-top:0}
+  #print-sheet .ps-op-b{height:10mm}
+  #print-sheet .ps-foot .ps-sign{flex:0 0 74mm;margin-top:0;text-align:left;
+    border:1px solid #444;border-radius:3px;padding:1.6mm 4mm;font-size:10px}
+  #print-sheet .ps-sign .date{margin-bottom:2mm;text-align:center}
+  #print-sheet .ps-sign .line{display:block;margin-bottom:2.8mm}
+  #print-sheet .ps-sign .line:last-child{margin-bottom:0}
+  #print-sheet .ps-sign .line span{min-width:0}
+}
+
 /* ==DARK-START== */
 @media screen{
 body.dark ::-webkit-scrollbar-thumb{background:#222c3f}
@@ -1282,8 +1358,8 @@ body.dark img,body.dark svg{opacity:.94}
 })();
 
 /* ===== 버전 ===== */
-const APP_VER='v32', APP_DATE='2026-08-21';
-const VER_NOTE='v32 · 2026.08.21.\n· 5등급 환산을 부산교육청 진학아이 기준표로 교체\n· 화면에 버전 표시 추가\n(이전) v31 원자료 ver0703 전수 대조 · v30 5등급 환산 · v29 배지·색상 개편';
+const APP_VER='v35', APP_DATE='2026-08-26';
+const VER_NOTE='v35 · 2026.08.26.\n· 희망원 인쇄물을 8열 표로 전면 교체(A4 가로), 상담·서명란 제거\n· 고사일이 전형과 무관하게 새던 문제 수정(전형방법에 그 고사가 있을 때만 표기)\n· 입결 컷 연도를 머리글로 이관, 표 정렬·한글 줄바꿈 정리\n(이전) v32 5등급 환산 기준표 교체 · v31 원자료 ver0703 전수 대조';
 const RAW = JSON.parse(document.getElementById('DATA').textContent);
 const U = RAW.unis, A = RAW.adiga, S = RAW.school, META = RAW.meta;
 const AD27 = RAW.admis2027||[], SCHED = RAW.sched||[], DICT = RAW.dict||[];
@@ -2906,36 +2982,104 @@ if($('cart-file')) $('cart-file').addEventListener('change', e=>{
 $('cart-pdf').onclick=()=>{
   if(!CART.length){ alert('먼저 모집단위를 담아주세요!'); return; }
   buildPrintSheet();
+  let ps=document.getElementById('pm-page');
+  if(!ps){ ps=document.createElement('style'); ps.id='pm-page'; document.head.appendChild(ps); }
+  ps.textContent='@media print{@page{size:A4 landscape;margin:9mm}}';
+  const done=()=>{ const e=document.getElementById('pm-page'); if(e) e.textContent='';
+    window.removeEventListener('afterprint',done); };
+  window.addEventListener('afterprint',done);
   window.print();
+  setTimeout(done, 1500);
 };
+/* 고사일 검증: 고사일 자료가 대학+모집단위 단위라 전형이 다른 행에도 새어 나온다.
+   2027 전형방법에 실제로 그 고사가 있을 때만 표기한다(확인 불가하면 숨김). */
+function psSched(g, a){
+  if(!g.sc) return null;
+  const kind=g.sc[0], raw=String(g.sc[1]||'').trim();
+  if(!raw) return null;
+  if(!a) return null;                       // 2027 요강 미확인 → 검증 불가
+  const md=dtext(a.md)||'', t=typeOf(g);
+  const ok = kind==='면접' ? /면접|구술|심층/.test(md)
+           : kind==='논술' ? (/논술/.test(md) || t==='논술')
+           : (/실기|실적/.test(md) || t==='기타');
+  if(!ok) return null;
+  const m=raw.match(/^\s*(\d{1,2}\s*\.\s*\d{1,2}\s*\.?\s*(?:\([^)]*\))?)/);
+  return { kind, head: m?m[1].trim():'', rest: m?raw.slice(m[0].length).trim():raw };
+}
+/* 2027 전형방법 → 단계별 줄 (인쇄 표용) */
+function psMethodHtml(raw){
+  const t=String(raw||'').trim();
+  if(!t) return '<span class="ps-dim">2027 요강 미확인</span>';
+  const cell=(k,v)=>`<div class="ps-st"><span class="ps-k">${k}</span><span class="ps-v">${esc(v)}</span></div>`;
+  const i1=t.search(/\[?\s*1\s*단계/), i2=t.search(/\[?\s*2\s*단계/);
+  if(i1>=0 && i2>i1){
+    const strip=x=>x.replace(/^[\s\/:：]+/,'').replace(/[\s\/]+$/,'').trim();
+    const pre=strip(t.slice(0,i1));
+    const s1=strip(t.slice(i1,i2).replace(/^\[?\s*1\s*단계\s*\]?/,''));
+    const s2=strip(t.slice(i2).replace(/^\[?\s*2\s*단계\s*\]?/,''));
+    return (pre?cell('·',pre):'')+cell('1단계',s1)+cell('2단계',s2);
+  }
+  return `<div class="ps-st"><span class="ps-k">일괄</span><span class="ps-v">${esc(t)}</span></div>`;
+}
 function buildPrintSheet(){
-  const today=new Date();
-  const dstr=`${today.getFullYear()}년 ${today.getMonth()+1}월 ${today.getDate()}일`;
+  const LATEST_Y=YEARS[YEARS.length-1];
   const myg=(CI.g||st.myG)?fmtG(parseFloat(CI.g)||st.myG):'';
   const s=cartStats();
   const clashSet=new Set(); s.clashes.forEach(c=>c.items.forEach(i=>clashSet.add(i)));
-  const cards=CART.map((c,i)=>{
+  const rows=CART.map((c,i)=>{
     const g=A[c.gi], u=U[g.u], lc=latestCut(g), a=(g.a27!=null)?ad27row(g.a27):null;
-    const cut=lc?fmtG(lc.cut):'—';
-    const comp=lc&&lc.v[1]!=null?lc.v[1].toFixed(1):'—';
-    const chu=lc&&lc.v[0]>0&&lc.v[2]!=null?(lc.v[2]/lc.v[0]*100).toFixed(0)+'%':'—';
+    const rank=i<6?(i+1)+'지망':'예비';
+    /* 전형명 / 유형 / 모집·경쟁 */
     const q=a&&a.q!=null&&a.q!==''?a.q+'명':'—';
-    const method=a?(dtext(a.md)||'—'):'2027 요강 미확인';
-    const mr=a?(minReqInfo(a).raw||'미표기'):'—';
-    const sched=g.sc?`${g.sc[0]} ${g.sc[1]}`:'';
-    const z=zoneLabel(lc?lc.cut:null);
-    const yc=YEARS.map(y=>{const rr=g.y[y];if(!rr||!rr[0])return null;const cc=(rr[0][4]??rr[0][3]);return cc!=null?`${String(y).slice(2)} ${fmtG(cc)}`:null;}).filter(Boolean);
+    const comp=lc&&lc.v[1]!=null?lc.v[1].toFixed(1):'—';
+    const jnCell=`<div class="ps-jn">${esc(g.j)}</div><span class="ps-tt">${typeOf(g)}</span>`
+      +`<div class="ps-sub">모집 ${esc(q)}${lc&&lc.v[1]!=null?` · ${lc.year}경쟁 ${comp}`:''}</div>`;
+    /* 입결 컷 50/70 */
+    let cutCell;
+    if(lc){
+      const d50=lc.v[3], d70=lc.v[4];
+      const inv=(d50!=null&&d70!=null&&d50-d70>0.3)?'<span class="ps-inv">⚠︎</span>':'';
+      const z=zoneLabel(lc.cut);
+      const noteY=(String(lc.year)!==String(LATEST_Y))?`${lc.year}년 값`:'';
+      const sub=[noteY,z].filter(Boolean).join(' · ');
+      cutCell=`<div class="ps-cut">${fmtG(d50)}<span>/</span>${fmtG(d70)}${inv}</div>`
+        +(sub?`<div class="ps-sub">${sub}</div>`:'');
+    } else cutCell='<span class="ps-dim">발표 자료 없음</span>';
+    /* 본교 선배 기록 */
     const bi=bonInfo(g);
-    const bonTxt=bi?`본교 선배(같은 학과·${typeOf(g)}전형) ${bi.recs.length}건 — 합격 ${bi.nP}${bi.nF?` / 불합격 ${bi.nF}`:''} · 선배 등급 ${bi.recs.slice().sort((x,y)=>(x.g??99)-(y.g??99)).slice(0,6).map(r=>`${String(r.y).slice(2)}·${fmtG(r.g)}${r.res==='F'?'✕':'○'}`).join(', ')}`:'';
-    return `<div class="ps-card">
-      <div class="ps-c-h"><span class="ps-c-n">${i<6?(i+1)+'지망':'예비'}</span> <b>${esc(u.n)}</b> ${esc(g.m)}
-        <span class="ps-c-t">${typeOf(g)}·${esc(g.j)}</span>${z?`<span class="ps-c-z">${z}</span>`:''}
-        <span class="ps-c-cut">${lc?lc.year:''}경쟁 ${comp} · 충원 ${chu}${yc.length>=2?` · 연도별컷 ${yc.join(' / ')}`:` · 컷 ${cut}`}</span></div>
-      <div class="ps-c-req"><b>2027</b> 모집 ${q} · 전형방법 ${esc(method)} · 수능최저 ${esc(mr)}${sched?` · 고사일 ${esc(sched)}${clashSet.has(i)?' ※겹침':''}`:''}</div>
-      ${bonTxt?`<div class="ps-c-bon">${esc(bonTxt)}</div>`:''}
-      <div class="ps-c-memo">메모: ${esc(c.memo||'')}</div>
-    </div>`;
-  });
+    let bonCell;
+    if(bi){
+      bonCell=(bi.nP?`<span class="ps-b p">합 ${bi.nP}${bi.pLow!=null?`<i>· ${fmtG(bi.pLow)}</i>`:''}</span>`:'')
+        +(bi.nF?`<span class="ps-b f">불 ${bi.nF}${bi.fBest!=null?`<i>· ${fmtG(bi.fBest)}</i>`:''}</span>`:'');
+    } else bonCell='<span class="ps-dim">지원 기록 없음</span>';
+    /* 면접·논술 고사일 */
+    const sd=psSched(g,a);
+    const exCell=sd
+      ? `<div class="ps-ex${clashSet.has(i)?' clash':''}">`
+        +`<span class="ps-exk">${esc(sd.kind)}</span>`
+        +(sd.head?`<b>${esc(sd.head)}</b>`:'')
+        +(sd.rest?`<span class="ps-exr">${esc(sd.rest)}</span>`:'')
+        +(clashSet.has(i)?'<span class="ps-exc">일정 겹침</span>':'')+`</div>`
+      : '<span class="ps-dim">—</span>';
+    /* 수능최저 */
+    let mrCell;
+    if(!a) mrCell='<span class="ps-dim">요강 미확인</span>';
+    else { const mi=minReqInfo(a);
+      mrCell=mi.has?`<div class="ps-min">있음</div><div class="ps-sub">${esc(mi.raw)}</div>`
+                   :`<span class="ps-dim">없음</span>`; }
+    const memo=(c.memo||'').trim();
+    return `<tr class="ps-row${memo?'':' ps-last'}">
+      <td class="ps-rank">${rank}</td>
+      <td><div class="ps-uni">${esc(u.n)}</div><div class="ps-dept">${esc(g.m)}</div></td>
+      <td>${jnCell}</td>
+      <td class="ps-c-cut">${cutCell}</td>
+      <td>${bonCell}</td>
+      <td>${exCell}</td>
+      <td>${mrCell}</td>
+      <td>${psMethodHtml(a?dtext(a.md):'')}</td>
+    </tr>`
+    + (memo?`<tr class="ps-memo ps-last"><td></td><td colspan="7">메모 · ${esc(memo)}</td></tr>`:'');
+  }).join('');
   const zoneTxt=['도전','적정','안정'].filter(z=>s.zone[z]).map(z=>`${z} ${s.zone[z]}`).join(' · ')||'—';
   const typeTxt=Object.entries(s.type).map(([t,n])=>`${t} ${n}`).join(' · ')||'—';
   const clashTxt=s.clashes.length?`<div class="ps-clash">⚠️ 고사일 중복: ${s.clashes.map(c=>`${dayRangeLabel(c)}(${c.items.map(i=>i<6?(i+1)+'지망':'예비').join('·')})`).join(' / ')}</div>`:'';
@@ -2949,17 +3093,25 @@ function buildPrintSheet(){
     </div>
     <div class="ps-sum">담은 곳 <b>${CART.length}</b>곳 · 지원 라인 ${zoneTxt} · 전형 ${typeTxt} · 수능최저 적용 ${s.minreq}곳</div>
     ${clashTxt}
-    <div class="ps-cards">${cards.join('')}</div>
-    <p class="ps-note">※ 참고컷·경쟁률·충원율은 대학어디가 발표 과거 입결(참고용)입니다.
+    <table class="ps-tbl">
+      <colgroup>
+        <col style="width:4.5%"><col style="width:15%"><col style="width:13%"><col style="width:8%">
+        <col style="width:10%"><col style="width:12.5%"><col style="width:16%"><col style="width:21%">
+      </colgroup>
+      <thead>
+        <tr class="ps-g"><th colspan="3">지 원 정 보</th><th colspan="2">참 고 성 적</th><th colspan="3">전 형 조 건 · 일 정</th></tr>
+        <tr>
+          <th>지망</th><th>대학 · 모집단위</th><th>전형명 / 유형</th>
+          <th>입결 컷<small>50% / 70%<br>${LATEST_Y} 기준</small></th><th>본교 선배 기록</th>
+          <th>면접 · 논술</th><th>수능 최저</th><th>2027 전형 방법</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="ps-note">※ <b>입결 컷</b>은 대학어디가 발표 과거 입결(참고용)로, 머리글의 연도 기준입니다(그 연도 자료가 없으면 칸에 사용한 연도를 적었습니다).
       <b>상위권 종합전형 컷은 특목고·자사고 등 비일반고 상위권 포함으로 실제보다 낮아 보이는 착시</b>가 있으니 그대로 신뢰하지 마세요.
-      2027 전형방법·모집인원·수능최저는 반드시 각 대학 공식 모집요강으로 확인하세요. 수시 지원은 1인 최대 6회입니다.</p>
-    <div class="ps-op"><div class="ps-op-h">상담 의견</div><div class="ps-op-b"></div></div>
-    <div class="ps-sign">
-      <div class="date">${dstr}</div>
-      <div class="line"><span>학생 : ______________ (인)</span></div>
-      <div class="line"><span>학부모 : ______________ (인)</span></div>
-      <div class="line"><span>담임 확인 : ______________ (인)</span></div>
-    </div>`;
+      <b>본교 선배 기록</b>의 뒤 숫자는 선배 본인의 학생부 등급으로 왼쪽 컷과 다른 값이며, 기록이 없다는 것은 같은 전형에 지원한 선배가 없었다는 뜻입니다.
+      면접·논술 고사일은 <b>해당 전형에 그 고사가 실제로 있는 경우만</b> 표기했고(<b>—</b>는 자료가 없거나 해당 없음), <b>원서접수 기간과 합격자 발표일은 이 표에 없으니</b> 각 대학 2027 모집요강에서 직접 확인하세요. 수시 지원은 1인 최대 6회입니다.</p>`;
 }
 /* ---------- 대학 선택(비교 보기) ---------- */
 let UNI_COUNT=null;
