@@ -2199,12 +2199,10 @@ function openModal(g){
         <div class="a27-row"><span class="a27-k">전형방법</span><span class="a27-v">${bars||esc(method)||'—'}</span></div>
         <div class="a27-row"><span class="a27-k">모집인원</span><span class="a27-v">${a.q!=null&&a.q!==''?esc(String(a.q))+'명':'—'}</span></div>
         <div class="a27-row"><span class="a27-k">수능최저</span><span class="a27-v">${minreq?esc(minreq):'<span style="color:var(--muted)">원자료에 표기 없음 — 대학 공식 요강 확인</span>'}</span></div>
-        ${g.sc?`<div class="a27-row"><span class="a27-k">${esc(g.sc[0])}일정</span><span class="a27-v"><span class="exam-chip">📅 ${esc(g.sc[1])}</span>
-          <a class="cal-link" href="https://kkw-web.github.io/SUSI-calendar/" target="_blank" rel="noopener">전체 일정 달력 ↗</a></span></div>`:''}
+        ${(()=>{const sd=schedOf(g,a);return sd?`<div class="a27-row"><span class="a27-k">${esc(sd.kind)}일정</span><span class="a27-v"><span class="exam-chip">📅 ${esc(sd.raw)}</span>
+          <a class="cal-link" href="https://kkw-web.github.io/SUSI-calendar/" target="_blank" rel="noopener">전체 일정 달력 ↗</a></span></div>`:'';})()}
       </div>
       <p class="mnote">⚠️ 2027학년도 모집요강 기준. 신설·변경 전형은 비어 있을 수 있으니 최종 지원 전 대학 공식 요강을 반드시 확인하세요.</p></div>`;
-  } else if(g.sc){
-    admis27Html=`<div class="msec"><h4>📅 전형 일정</h4><div class="a27-box"><div class="a27-row"><span class="a27-k">${esc(g.sc[0])}일정</span><span class="a27-v"><span class="exam-chip">📅 ${esc(g.sc[1])}</span></span></div></div></div>`;
   }
   $('modal').innerHTML=`
     <button class="mclose" id="mclose">✕</button>
@@ -2664,10 +2662,11 @@ function cartStats(){
     const a=(g.a27!=null)?ad27row(g.a27):null;
     if(!a) s.noA27++;
     else if(minReqInfo(a).has) s.minreq++;
-    if(g.sc){
-      const days=schedDays(g.sc[1]);
+    const sd=schedOf(g,a);
+    if(sd){
+      const days=schedDays(sd.raw);
       if(days.length){
-        s.schedItems.push({i, gi:c.gi, kind:g.sc[0], raw:g.sc[1], days});
+        s.schedItems.push({i, gi:c.gi, kind:sd.kind, raw:sd.raw, days});
         days.forEach(d=>{ if(!s.dayMap.has(d)) s.dayMap.set(d,[]); s.dayMap.get(d).push(i); });
       }
     }
@@ -2802,7 +2801,8 @@ function renderCart(){
       const mi=minReqInfo(a);
       const mrHtml=`<span class="hc-min ${mi.cls}" title="${esc(mi.tip)}">${mi.label}</span>`
         + (mi.has?` <span class="hc-minx">${esc(mi.raw)}</span>`:'');
-      const sched=g.sc?` · <span class="hc-exam${clashSet.has(i)?' clash':''}">📅 ${esc(g.sc[0])} ${esc(g.sc[1])}${clashSet.has(i)?' ⚠️겹침':''}</span>`:'';
+      const sdc=schedOf(g,a);
+      const sched=sdc?` · <span class="hc-exam${clashSet.has(i)?' clash':''}">📅 ${esc(sdc.kind)} ${esc(sdc.raw)}${clashSet.has(i)?' ⚠️겹침':''}</span>`:'';
       req27=`<div class="hc-27"><span class="hc-tag27">2027</span> 모집 <b>${q}</b> · ${mrHtml}${sched}</div>${methodBarsHtml(dtext(a.md))}`;
     } else {
       req27=`<div class="hc-27"><span class="hc-tag27 off">2027</span> <span class="hc-muted">요강 정보 미확인 — 대학 공식 모집요강을 확인하세요</span></div>`;
@@ -2991,9 +2991,10 @@ $('cart-pdf').onclick=()=>{
   window.print();
   setTimeout(done, 1500);
 };
-/* 고사일 검증: 고사일 자료가 대학+모집단위 단위라 전형이 다른 행에도 새어 나온다.
-   2027 전형방법에 실제로 그 고사가 있을 때만 표기한다(확인 불가하면 숨김). */
-function psSched(g, a){
+/* 고사일 검증(화면·인쇄 공용): 고사일 원자료가 대학+모집단위 단위라 전형이 다른 행에도 새어 나온다.
+   2027 전형방법에 실제로 그 고사가 있을 때만 인정한다(확인 불가하면 숨김). */
+function schedOf(g, a){
+  if(a===undefined) a=(g.a27!=null)?ad27row(g.a27):null;
   if(!g.sc) return null;
   const kind=g.sc[0], raw=String(g.sc[1]||'').trim();
   if(!raw) return null;
@@ -3004,7 +3005,7 @@ function psSched(g, a){
            : (/실기|실적/.test(md) || t==='기타');
   if(!ok) return null;
   const m=raw.match(/^\s*(\d{1,2}\s*\.\s*\d{1,2}\s*\.?\s*(?:\([^)]*\))?)/);
-  return { kind, head: m?m[1].trim():'', rest: m?raw.slice(m[0].length).trim():raw };
+  return { kind, raw, head: m?m[1].trim():'', rest: m?raw.slice(m[0].length).trim():raw };
 }
 /* 2027 전형방법 → 단계별 줄 (인쇄 표용) */
 function psMethodHtml(raw){
@@ -3053,7 +3054,7 @@ function buildPrintSheet(){
         +(bi.nF?`<span class="ps-b f">불 ${bi.nF}${bi.fBest!=null?`<i>· ${fmtG(bi.fBest)}</i>`:''}</span>`:'');
     } else bonCell='<span class="ps-dim">지원 기록 없음</span>';
     /* 면접·논술 고사일 */
-    const sd=psSched(g,a);
+    const sd=schedOf(g,a);
     const exCell=sd
       ? `<div class="ps-ex${clashSet.has(i)?' clash':''}">`
         +`<span class="ps-exk">${esc(sd.kind)}</span>`
@@ -3253,7 +3254,7 @@ function renderGuide(){
   <h3>📝 지원 희망원 만들기</h3>
   <p>· 배치표·검색·맞춤 추천에서 마음에 드는 모집단위의 <b>♡</b>(또는 상세 화면의 '희망원에 담기')를 누르면 <b>📝 희망원</b> 탭에 쌓여요. 쇼핑몰 장바구니처럼요!</p>
   <p>· 담은 항목마다 <b>2027 전형방법·모집·수능최저·고사일</b>과 <b>과거 입결(경쟁률·충원율·컷)</b>이 함께 보여요 — 탐색부터 상담·인쇄까지 한 곳에서 끝나요.</p>
-  <p>· 희망원 탭에서 <b>⠿ 손잡이를 끌어 순서를 바꾸고</b>(▲▼·⤒ 버튼도 가능), 메모를 달고, 반·번호·이름·진로희망을 적은 뒤 <b>PDF로 저장</b>하면 상담용 지원 희망원이 완성돼요(인쇄 시 6개 이상 한 페이지 + 상담 의견란).</p>
+  <p>· 희망원 탭에서 <b>⠿ 손잡이를 끌어 순서를 바꾸고</b>(▲▼·⤒ 버튼도 가능), 메모를 달고, 반·번호·이름·진로희망을 적은 뒤 <b>PDF로 저장</b>하면 상담용 지원 희망원이 완성돼요. 인쇄물은 <b>A4 가로 1장짜리 8열 표</b>(지망·대학/모집단위·전형·입결 컷·본교 선배 기록·면접/논술·수능최저·2027 전형방법)로 나와요.</p>
   <p>· 맨 위 <b>요약 대시보드</b>에서 지원 슬롯(6칸), <b>도전·적정·안정 분포</b>, 전형·지역 분포, 수능최저 적용 수를 한눈에 볼 수 있고, 상향/하향 편중 같은 <b>점검 코멘트</b>도 알려줘요.</p>
   <p>· <b>⚠️ 고사일 충돌 감지</b>: 담은 곳들의 면접·논술·실기 날짜가 겹치면 빨간 경고와 함께 어떤 대학끼리 겹치는지 알려줘요. 아래 <b>타임라인</b>에서 날짜순으로도 확인할 수 있어요.</p>
   <p>· <b>⚡ 빠른 추가</b> 검색창에 '동국대, 경영'처럼 입력하면 배치표로 돌아가지 않고 바로 담을 수 있어요.</p>
@@ -3263,7 +3264,7 @@ function renderGuide(){
   <h3>🗓️ 수시 일정 달력</h3>
   <p>· 위쪽 <b>🗓️ 수시 일정 달력</b> 버튼을 누르면 전국 대학의 원서접수·면접·논술·실기·합격발표 일정을 월별 달력으로 볼 수 있는 사이트가 새 창으로 열려요.</p>
   <h3>🎯 2027 전형방법·면접일정 보기</h3>
-  <p>· 배치표·검색에서 카드를 누르면 상세 화면에 <b>2027학년도 전형방법</b>(학생부·서류·면접 등 반영비율), <b>모집인원</b>, <b>수능 최저</b>, <b>면접·논술·실기 고사일</b>이 과거 입결과 함께 나와요.</p>
+  <p>· 배치표·검색에서 카드를 누르면 상세 화면에 <b>2027학년도 전형방법</b>(학생부·서류·면접 등 반영비율), <b>모집인원</b>, <b>수능 최저</b>, <b>면접·논술·실기 고사일</b>이 과거 입결과 함께 나와요. 고사일 자료는 대학·모집단위 단위로만 제공돼서, <b>희망원 인쇄물에서는 그 전형에 실제로 해당 고사가 있을 때만</b> 표기해요(없으면 —).</p>
   <p>· 상세 화면의 본교 기록은 <b>🎓 이 모집단위</b>(같은 전형 / 같은 학과 다른 전형으로 다시 구분) → <b>🏫 같은 대학 다른 모집단위</b> 순으로 나뉘어 보여요. 각각 합격률·합격 등급대·불합격 최상위 등급이 함께 계산돼요.</p>
   <h3>🛠 화면 조작</h3>
   <p>· <b>구간</b>: 배치표의 등급 구간을 <b>0.25 / 0.5 / 1.0</b> 등급으로 바꿀 수 있어요. 0.5나 1.0으로 묶으면 스크롤이 훨씬 짧아져요.</p>
